@@ -5,10 +5,26 @@
 
 ## default connection pool
 spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
   datasource:
-    hikari:
-      connectionTimeout: 20000
-      maximumPoolSize: 5
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: password
+    platform: postgres
+    url: jdbc:postgresql://database-yourrights.cbyqx4iadwwj.us-east-2.rds.amazonaws.com:8181/yourrightsdb
+    username: yourrightsadmin
+    password: yourrightsadmin
+    
+    
+  
+#spring.jpa.database=POSTGRESQL
+#spring.datasource.platform=postgres
+#spring.datasource.url=jdbc:postgresql://localhost:5432/postgres
+#spring.datasource.username=postgres
+#spring.datasource.password=root
+#spring.jpa.show-sql=true
+#spring.jpa.generate-ddl=true
+#spring.jpa.hibernate.ddl-auto=create-drop
+#spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true

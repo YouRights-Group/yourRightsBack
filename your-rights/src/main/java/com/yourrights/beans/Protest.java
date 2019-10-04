@@ -1,4 +1,4 @@
-package com.yourrights.controllers.beans;
+package com.yourrights.beans;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
