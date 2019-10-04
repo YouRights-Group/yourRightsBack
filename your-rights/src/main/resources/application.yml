@@ -1,0 +1,14 @@
+
+## AWS
+#cloud.aws.region.auto: false
+#cloud.aws.region.static: eu-west-1
+
+## default connection pool
+spring:
+  datasource:
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: password
