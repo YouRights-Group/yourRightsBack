@@ -1,7 +1,9 @@
 package com.yourrights.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,4 +30,25 @@ public class ProtestsController {
     public Protests getProtests() {
         return protestService.getProtests();
     }
+    
+    @GetMapping(value = "{id}")
+    public Protest getProtest(@PathVariable("id") long id) {
+        return protestService.getProtest(id);
+    }
+    
+    @GetMapping(value = Constants.SEARCH + "/{city}")
+    public Protests searchProtest(@PathVariable("city") String city) {
+        return protestService.searchProtest(city);
+    }
+    
+    @DeleteMapping()
+    public void deleteProtest(@PathVariable("id") long id) {
+        protestService.deleteProtest(id);
+    }
+    
+    @GetMapping("/prueba")
+    public Protest getProtest() {
+        return null;
+    }
+    
 }

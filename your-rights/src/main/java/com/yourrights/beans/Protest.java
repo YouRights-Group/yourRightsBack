@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Protest {
 
-	private String id;
+	private long id;
 	private String name;
 	private String city;
 }
