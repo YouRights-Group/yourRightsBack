@@ -1,6 +1,7 @@
 package com.yourrights.repository.beans;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,5 +26,14 @@ public class ProtestEntity implements Serializable {
     private String name;
     @Column(name = "city")
     private String city;
-    // Setters, getters and constructors
+    @Column(name = "whoDefends")
+    private String whoDefends;
+    @Column(name = "promotedBy")
+    private String promotedBy;
+    @Column(name = "date")
+    private Date date;
+    @Column(name = "area")
+    private String area;
+    @Column(name = "time")
+    private Date time;
 }

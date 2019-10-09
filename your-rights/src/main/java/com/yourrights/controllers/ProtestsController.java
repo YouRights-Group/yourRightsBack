@@ -18,6 +18,7 @@ import com.yourrights.services.ProtestsService;
 @RestController
 @RequestMapping(Constants.PROTEST_REST)
 @CrossOrigin(origins = "*")
+// TODO Mirar crossOrigin
 public class ProtestsController {
 
     @Autowired
@@ -46,11 +47,6 @@ public class ProtestsController {
     @DeleteMapping()
     public void deleteProtest(@PathVariable("id") long id) {
         protestService.deleteProtest(id);
-    }
-    
-    @GetMapping("/prueba")
-    public Protest getProtest() {
-        return null;
     }
     
 }
