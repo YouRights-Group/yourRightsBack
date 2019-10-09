@@ -1,6 +1,7 @@
 package com.yourrights.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import com.yourrights.services.ProtestsService;
 
 @RestController
 @RequestMapping(Constants.PROTEST_REST)
+@CrossOrigin(origins = "*")
 public class ProtestsController {
 
     @Autowired
