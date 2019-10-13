@@ -13,4 +13,6 @@ public interface ProtestsRepository extends CrudRepository<ProtestEntity, Long> 
     List<ProtestEntity> findAll();
     
     List<ProtestEntity> findByCity(String city);
+    
+    List<ProtestEntity> findByParameter(String city, String whoDefends);
 }
