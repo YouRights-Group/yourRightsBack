@@ -44,7 +44,7 @@ public class ProtestsController {
         return protestService.searchProtest(city);
     }
     
-    @DeleteMapping()
+    @DeleteMapping(value = "delete/" + "/{id}")
     public void deleteProtest(@PathVariable("id") long id) {
         protestService.deleteProtest(id);
     }

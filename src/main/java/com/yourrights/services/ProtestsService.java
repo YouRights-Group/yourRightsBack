@@ -3,6 +3,7 @@ package com.yourrights.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +20,7 @@ public class ProtestsService {
 
     public void createProtest(Protest protest) {
         ProtestEntity protestEntity = new ProtestEntity();
-        protestEntity.setName(protest.getName());
-        protestEntity.setCity(protest.getCity());
+        BeanUtils.copyProperties(protest, protestEntity);
         repository.save(protestEntity);
 
     }
@@ -29,9 +29,7 @@ public class ProtestsService {
     	List<Protest> protestList = new ArrayList<Protest>();
         repository.findAll().forEach(entity -> {
         	Protest p = new Protest();
-        	p.setName(entity.getName());
-        	p.setCity(entity.getCity());
-        	p.setId(entity.getId());
+        	BeanUtils.copyProperties(entity, p);
         	protestList.add(p);
         	});
         Protests protests = new Protests();
@@ -42,9 +40,7 @@ public class ProtestsService {
 	public Protest getProtest(long id) {
 		ProtestEntity protestEntity = repository.findById(id);
 		Protest protest = new Protest();
-		protest.setName(protestEntity.getName());
-		protest.setCity(protestEntity.getCity());
-		protest.setId(protestEntity.getId());
+		BeanUtils.copyProperties(protestEntity, protest);
 		return protest;
 	}
 
@@ -56,9 +52,7 @@ public class ProtestsService {
 		List<Protest> protestList = new ArrayList<Protest>();
         repository.findByCity(city).forEach(entity -> {
         	Protest p = new Protest();
-        	p.setName(entity.getName());
-        	p.setCity(entity.getCity());
-        	p.setId(entity.getId());
+        	BeanUtils.copyProperties(entity, p);
         	protestList.add(p);
         	});
         Protests protests = new Protests();
