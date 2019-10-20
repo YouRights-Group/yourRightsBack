@@ -47,6 +47,10 @@ public class ProtestsService {
 	List<Protest> protestList = new ArrayList<Protest>();
 	repository.findAll().forEach(entity -> {
 	    Protest p = new Protest();
+	    // TODO Solo exponer los parámetro que se pueden ver
+//	    p.setCity(entity.getCity());
+//	    p.setDate(entity.getDate());
+//	    p.setWhoDefends(entity.getWhoDefends());
 	    BeanUtils.copyProperties(entity, p);
 	    protestList.add(p);
 	});

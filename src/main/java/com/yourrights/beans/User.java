@@ -2,6 +2,7 @@ package com.yourrights.beans;
 
 import java.io.Serializable;
 
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,4 +14,5 @@ public class User implements Serializable {
 
     private String user;
     private String token;
+    private String password;
 }

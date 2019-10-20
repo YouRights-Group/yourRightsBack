@@ -36,4 +36,6 @@ public class ProtestEntity implements Serializable {
     private String area;
     @Column(name = "time")
     private Date time;
+    // TODO: Añadir blob para adjuntos
+    // TODO: Añadir ubicación GPS
 }

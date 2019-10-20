@@ -28,7 +28,7 @@ public class YourRightsApplication {
 	protected void configure(HttpSecurity http) throws Exception {
 	    http.csrf().disable()
 		    .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
-		    .authorizeRequests().antMatchers(HttpMethod.POST, "/user", "/protests/list").permitAll()
+		    .authorizeRequests().antMatchers("/login", "/protests/list").permitAll()
 		    .anyRequest().authenticated();
 	}
     }
