@@ -28,7 +28,12 @@ public class YourRightsApplication {
 	protected void configure(HttpSecurity http) throws Exception {
 	    http.csrf().disable()
 		    .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
-		    .authorizeRequests().antMatchers("/login", "/protests/list").permitAll()
+		    .authorizeRequests().antMatchers("/login", "/protests/list/**", "/v2/api-docs",
+                            "/configuration/ui",
+                            "/swagger-resources/**",
+                            "/configuration/security",
+                            "/swagger-ui.html",
+                            "/webjars/**").permitAll()
 		    .anyRequest().authenticated();
 	}
     }

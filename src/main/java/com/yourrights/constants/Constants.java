@@ -22,4 +22,7 @@ public class Constants {
     public static final String USER_WRONG_PASSWORD = "ERR_USER_02"; // User wrong password
     public static final String USER_NOT_FOUND = "ERR_USER_03"; // User not found
 
+    public enum Months {
+	ENERO, FEBRERO, MARZO, ABRIL, MAYO, JUNIO, JULIO, AGOSTO, SEPTIEMBRE, OCTUBRE, NOVIEMBRE, DICIEMBRE;
+    }
 }

@@ -1,5 +1,7 @@
 package com.yourrights.controllers;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,9 +31,9 @@ public class ProtestsController {
         protestService.createProtest(protest);
     }
 
-    @GetMapping(Constants.LIST)
-    public Protests getProtests() {
-        return protestService.getProtests();
+    @GetMapping(value = Constants.LIST + "/{pos}")
+    public Protests getProtests(@PathVariable("pos") int pos) {
+        return protestService.getProtests(pos);
     }
     
     @GetMapping(value = "{id}")
@@ -39,10 +41,16 @@ public class ProtestsController {
         return protestService.getProtest(id);
     }
     
-    @GetMapping(value = Constants.SEARCH + "/{city}")
-    public Protests searchProtest(@PathVariable("city") String city) {
+    @GetMapping(value = Constants.SEARCH + "/{city}"+"/{date}")
+    public Protests searchProtest(@PathVariable("city") String city, @PathVariable("city") Date date) {
         return protestService.searchProtest(city);
     }
+    
+    // TODO: por nombre
+    // TODO: Ciudad
+    // TODO: por fecha
+    // TODO: por país
+    // TODO: por area
     
     @DeleteMapping(value = "delete/" + "/{id}")
     public void deleteProtest(@PathVariable("id") long id) {

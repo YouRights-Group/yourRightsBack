@@ -26,6 +26,8 @@ public class ProtestEntity implements Serializable {
     private String name;
     @Column(name = "city")
     private String city;
+    @Column(name = "country")
+    private String country;
     @Column(name = "whoDefends")
     private String whoDefends;
     @Column(name = "promotedBy")
@@ -36,6 +38,9 @@ public class ProtestEntity implements Serializable {
     private String area;
     @Column(name = "time")
     private Date time;
-    // TODO: Añadir blob para adjuntos
+    @Column(name = "document")
+    private byte[] document;
+    
     // TODO: Añadir ubicación GPS
+    //private List<Ubicaciones>
 }

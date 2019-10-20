@@ -1,10 +1,17 @@
 package com.yourrights.services;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.yourrights.beans.Protest;
@@ -43,21 +50,28 @@ public class ProtestsService {
 	return true;
     }
 
-    public Protests getProtests() {
+    public Protests getProtests(int pos) {
 	List<Protest> protestList = new ArrayList<Protest>();
-	repository.findAll().forEach(entity -> {
+	Pageable pageable = PageRequest.of(pos + 0, pos + 20);
+	Page<ProtestEntity> page = repository.findAll(pageable);
+	page.getContent().forEach(entity -> {
 	    Protest p = new Protest();
-	    // TODO Solo exponer los parámetro que se pueden ver
-//	    p.setCity(entity.getCity());
-//	    p.setDate(entity.getDate());
-//	    p.setWhoDefends(entity.getWhoDefends());
-	    BeanUtils.copyProperties(entity, p);
+	    p.setCity(entity.getCity());
+	    p.setName(entity.getName());
+	    p.setDate(entity.getDate());
+	    p.setWhoDefends(entity.getWhoDefends());
+	    p.setPromotedBy(entity.getPromotedBy());
+	    p.setMonth(getMonth(entity.getDate()));
 	    protestList.add(p);
 	});
+	
+	// TODO: por paginación
 	Protests protests = new Protests();
 	protests.setProtests(protestList);
 	return protests;
     }
+
+    
 
     public Protest getProtest(long id) {
 	ProtestEntity protestEntity = repository.findById(id);
@@ -80,6 +94,12 @@ public class ProtestsService {
 	Protests protests = new Protests();
 	protests.setProtests(protestList);
 	return protests;
+    }
+    
+    private String getMonth(Date date) {
+	LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	int month = localDate.getMonthValue();
+	return Month.values()[month-1].name();
     }
 
 }

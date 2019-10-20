@@ -28,18 +28,23 @@ public class Protest implements Serializable{
     @JsonInclude(Include.NON_NULL)
     private String city;
     @JsonInclude(Include.NON_NULL)
+    private String country;
+    @JsonInclude(Include.NON_NULL)
     private String whoDefends;
     @JsonInclude(Include.NON_NULL)
     private String promotedBy;
     @JsonInclude(Include.NON_NULL)
     @JsonFormat(pattern = Constants.FORMAT_DD_MM_YYYY)
     private Date date;
-    // Usuario logado
     @JsonInclude(Include.NON_NULL)
     private String area;
     @JsonInclude(Include.NON_NULL)
     @JsonFormat(pattern = Constants.FORMAT_HH_MM)
     private Date time;
+    @JsonInclude(Include.NON_NULL)
+    private String month;
+    @JsonInclude(Include.NON_NULL)
+    private byte[] document;
 	
 	
 }
