@@ -3,7 +3,6 @@ package com.yourrights;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,7 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.yourrights.filters.JWTAuthorizationFilter;
 
 @SpringBootApplication
-@EnableJpaRepositories("com.yourrights.repository")
+//@EnableJpaRepositories("com.yourrights.repository")
 public class YourRightsApplication {
 
     public static void main(String[] args) {
@@ -28,13 +27,10 @@ public class YourRightsApplication {
 	protected void configure(HttpSecurity http) throws Exception {
 	    http.csrf().disable()
 		    .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
-		    .authorizeRequests().antMatchers("/login", "/protests/list/**", "/v2/api-docs",
-                            "/configuration/ui",
-                            "/swagger-resources/**",
-                            "/configuration/security",
-                            "/swagger-ui.html",
-                            "/webjars/**").permitAll()
-		    .anyRequest().authenticated();
+		    .authorizeRequests().antMatchers(HttpMethod.POST).permitAll()
+		    .antMatchers("/login", "/protests/list/**", "/v2/api-docs", "/configuration/ui",
+			    "/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/webjars/**")
+		    .permitAll().anyRequest().authenticated();
 	}
     }
 

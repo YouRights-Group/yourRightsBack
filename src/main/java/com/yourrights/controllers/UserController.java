@@ -21,24 +21,23 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @RestController
 public class UserController {
-    
+
     @Autowired
     private UserService userService;
 
     @PostMapping(Constants.LOGIN)
     public UserResponse login(@RequestBody User user) {
 
-	String token = getJWTToken(user.getUser());
-	user.setToken(token);
-	
-	userService.login(user);
-	
+	String token = getJWTToken(user.getEmail());
+
+	userService.login(user, token);
+
 	UserResponse response = new UserResponse();
 	response.setToken(token);
 	return response;
 
     }
-    
+
     @PostMapping(Constants.SIGN_UP)
     public void signUp(@RequestBody User user) {
 	userService.saveUser(user);

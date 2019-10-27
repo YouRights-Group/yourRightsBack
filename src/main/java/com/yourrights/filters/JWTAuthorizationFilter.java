@@ -1,7 +1,9 @@
 package com.yourrights.filters;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
@@ -9,10 +11,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.yourrights.repository.beans.UserEntity;
+import com.yourrights.services.UserService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -26,11 +34,14 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     private final String PREFIX = "Bearer ";
     private final String SECRET = "mySecretKey";
 
+    @Autowired
+    private UserService userService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 	    throws ServletException, IOException {
 	try {
-	    if (existeJWTToken(request, response)) {
+	    if (existsJWTToken(request, response)) {
 		Claims claims = validateToken(request);
 		if (claims.get("authorities") != null) {
 		    setUpSpringAuthentication(claims);
@@ -66,10 +77,20 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     }
 
-    private boolean existeJWTToken(HttpServletRequest request, HttpServletResponse res) {
+    private boolean existsJWTToken(HttpServletRequest request, HttpServletResponse res) {
 	String authenticationHeader = request.getHeader(HEADER);
 	if (authenticationHeader == null || !authenticationHeader.startsWith(PREFIX))
 	    return false;
+
+	UserEntity userEntity = userService.getUser(authenticationHeader);
+	if (userEntity == null)
+	    return false;
+
+	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	Map<String, Object> info = new HashMap<String, Object>();
+	info.put("user", userEntity);
+	((AbstractAuthenticationToken) auth).setDetails(info);
+
 	return true;
     }
 

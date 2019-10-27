@@ -2,19 +2,24 @@ package com.yourrights.repository.beans;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "protest")
+@Table(name = "protests")
 @Getter
 @Setter
 public class ProtestEntity implements Serializable {
@@ -33,6 +38,7 @@ public class ProtestEntity implements Serializable {
     @Column(name = "promotedBy")
     private String promotedBy;
     @Column(name = "date")
+    @Temporal(TemporalType.DATE)
     private Date date;
     @Column(name = "area")
     private String area;
@@ -40,7 +46,17 @@ public class ProtestEntity implements Serializable {
     private Date time;
     @Column(name = "document")
     private byte[] document;
-    
-    // TODO: Añadir ubicación GPS
-    //private List<Ubicaciones>
+    @Column(name = "protestsType")
+    private String protestsType;
+    @Column(name = "userType")
+    private String userType;
+
+    @OneToMany(mappedBy = "protestId")
+    private Set<LocationEntity> locationsProtest;
+    @ManyToOne
+    private UserEntity userCreator;
+    @ManyToOne
+    private UserEntity userFollower;
+
+//    private Set<UserEntity> 
 }

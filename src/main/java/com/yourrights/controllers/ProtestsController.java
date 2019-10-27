@@ -1,7 +1,5 @@
 package com.yourrights.controllers;
 
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,8 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yourrights.beans.Protest;
 import com.yourrights.beans.Protests;
+import com.yourrights.beans.SearchRequest;
 import com.yourrights.constants.Constants;
 import com.yourrights.services.ProtestsService;
+
+import io.swagger.annotations.ApiImplicitParam;
 
 @RestController
 @RequestMapping(Constants.PROTEST_REST)
@@ -27,34 +28,35 @@ public class ProtestsController {
     private ProtestsService protestService;
 
     @PostMapping(Constants.CREATE)
+    @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "Bearer access_token")
     public void createProtest(@RequestBody Protest protest) {
-        protestService.createProtest(protest);
+	protestService.createProtest(protest);
     }
 
     @GetMapping(value = Constants.LIST + "/{pos}")
     public Protests getProtests(@PathVariable("pos") int pos) {
-        return protestService.getProtests(pos);
+	return protestService.getProtests(pos);
     }
-    
+
     @GetMapping(value = "{id}")
     public Protest getProtest(@PathVariable("id") long id) {
-        return protestService.getProtest(id);
+	return protestService.getProtest(id);
     }
-    
-    @GetMapping(value = Constants.SEARCH + "/{city}"+"/{date}")
-    public Protests searchProtest(@PathVariable("city") String city, @PathVariable("city") Date date) {
-        return protestService.searchProtest(city);
+
+    @PostMapping(value = Constants.SEARCH)
+    public Protests searchProtest(@RequestBody SearchRequest request) {
+	return protestService.searchProtest(request);
     }
-    
+
     // TODO: por nombre
     // TODO: Ciudad
     // TODO: por fecha
     // TODO: por país
     // TODO: por area
-    
+
     @DeleteMapping(value = "delete/" + "/{id}")
     public void deleteProtest(@PathVariable("id") long id) {
-        protestService.deleteProtest(id);
+	protestService.deleteProtest(id);
     }
-    
+
 }

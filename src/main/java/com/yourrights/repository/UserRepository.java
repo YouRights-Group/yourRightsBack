@@ -1,12 +1,16 @@
 package com.yourrights.repository;
 
-
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.yourrights.repository.beans.UserEntity;
 
-public interface UserRepository extends CrudRepository<UserEntity, Long>{
+@Repository
+public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
-    UserEntity findByUser(String user);
-    
+    UserEntity findByEmail(String email);
+
+    // TODO: PASAR A LA CACHÉ
+    UserEntity findByToken(String token);
+
 }

@@ -16,33 +16,36 @@ public class UserService {
     private UserRepository repository;
 
     public void saveUser(User user) {
-	
-	UserEntity userExisted = repository.findByUser(user.getUser());
-	if(userExisted != null) {
+
+	UserEntity userExisted = repository.findByEmail(user.getEmail());
+	if (userExisted != null) {
 	    throw new UserException(Constants.ERROR, Constants.USER_EXISTED, "User already exists");
 	}
-	
+
 	UserEntity userEntity = new UserEntity();
-	userEntity.setUser(user.getUser());
+	userEntity.setEmail(user.getEmail());
 	userEntity.setPassword(user.getPassword());
-	
+
 	repository.save(userEntity);
-	
+
     }
 
-    public void login(User user) {
-	UserEntity userExisted = repository.findByUser(user.getUser());
-	if(userExisted == null) 
-	{
+    public void login(User user, String token) {
+	UserEntity userExisted = repository.findByEmail(user.getEmail());
+	if (userExisted == null) {
 	    throw new UserException(Constants.ERROR, Constants.USER_NOT_FOUND, "User not found");
-	} else 
-	{
-	    if(!userExisted.getPassword().equals(user.getPassword()))
-	    {
+	} else {
+	    if (!userExisted.getPassword().equals(user.getPassword())) {
 		throw new UserException(Constants.ERROR, Constants.USER_WRONG_PASSWORD, "User wrong password");
 	    }
 	}
+
+	userExisted.setToken(token);
+	repository.save(userExisted);
     }
-    
-    
+
+    public UserEntity getUser(String token) {
+	return repository.findByToken(token);
+    }
+
 }
