@@ -39,12 +39,12 @@ public class ProtestsService {
 	    protestEntity.setProtestsType(protest.getProtestType().name());
 	    protestEntity.setUserType(protest.getUserType().name());
 	    Set<LocationEntity> locationsProtest = new HashSet<LocationEntity>();
-	    protest.getLocationsProtest().forEach(loc -> {
+	    for (int i = 0; i < protest.getLocationsProtest().size(); i++) {
 		LocationEntity locEntity = new LocationEntity();
-		BeanUtils.copyProperties(loc, locEntity);
-		locEntity.setProtestId(protestEntity.getId());
+		BeanUtils.copyProperties(protest.getLocationsProtest().get(0), locEntity);
+		locEntity.setPointNumber(0);
 		locationsProtest.add(locEntity);
-	    });
+	    }
 	    protestEntity.setLocationsProtest(locationsProtest);
 
 	    ProtestEntity result = repository.save(protestEntity);

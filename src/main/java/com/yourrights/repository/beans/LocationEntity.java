@@ -30,6 +30,6 @@ public class LocationEntity implements Serializable {
     private double longitude;
     @Column(name = "protestId")
     private long protestId;
-    @Column(name = "order")
-    private long order;
+    @Column(name = "pointNumber")
+    private long pointNumber;
 }

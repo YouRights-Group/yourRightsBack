@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,7 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.yourrights.repository.beans.UserEntity;
 import com.yourrights.services.UserService;
@@ -28,7 +31,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 
-public class JWTAuthorizationFilter extends OncePerRequestFilter {
+public class JWTAuthorizationFilter implements Filter {
 
     private final String HEADER = "Authorization";
     private final String PREFIX = "Bearer ";
@@ -38,11 +41,12 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     private UserService userService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-	    throws ServletException, IOException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+	    throws IOException, ServletException {
+	SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 	try {
-	    if (existsJWTToken(request, response)) {
-		Claims claims = validateToken(request);
+	    if (existsJWTToken((HttpServletRequest) request, (HttpServletResponse) response)) {
+		Claims claims = validateToken((HttpServletRequest) request);
 		if (claims.get("authorities") != null) {
 		    setUpSpringAuthentication(claims);
 		} else {
@@ -51,11 +55,18 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 	    }
 	    chain.doFilter(request, response);
 	} catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
-	    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+	    ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_FORBIDDEN);
 	    ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 	    return;
 	}
     }
+
+//    @Override
+//    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+//	    throws ServletException, IOException {
+//	SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+//	
+//    }
 
     private Claims validateToken(HttpServletRequest request) {
 	String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");

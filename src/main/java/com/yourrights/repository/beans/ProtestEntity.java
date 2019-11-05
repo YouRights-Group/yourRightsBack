@@ -2,15 +2,19 @@ package com.yourrights.repository.beans;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -51,12 +55,9 @@ public class ProtestEntity implements Serializable {
     @Column(name = "userType")
     private String userType;
 
-    @OneToMany(mappedBy = "protestId")
-    private Set<LocationEntity> locationsProtest;
-    @ManyToOne
-    private UserEntity userCreator;
-    @ManyToOne
-    private UserEntity userFollower;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "protests_locations", joinColumns = { @JoinColumn(name = "protest_id") }, inverseJoinColumns = {
+	    @JoinColumn(name = "location_id") })
+    private Set<LocationEntity> locationsProtest = new HashSet<>();
 
-//    private Set<UserEntity> 
 }

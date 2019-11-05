@@ -13,4 +13,5 @@ public class Location implements Serializable {
 
     double latitude;
     double longitude;
+    long pointNumber;
 }
