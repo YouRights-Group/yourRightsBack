@@ -1,7 +1,6 @@
 package com.yourrights;
 
-import javax.servlet.Filter;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -22,24 +21,26 @@ public class YourRightsApplication {
 	SpringApplication.run(YourRightsApplication.class, args);
     }
 
+    @Bean
+    public JWTAuthorizationFilter getFilterBean() {
+	return new JWTAuthorizationFilter();
+    }
+
     @EnableWebSecurity
     @Configuration
     class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+	@Autowired
+	private JWTAuthorizationFilter filter;
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-	    http.csrf().disable()
-		    .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
-		    .authorizeRequests().antMatchers(HttpMethod.POST).permitAll()
-		    .antMatchers("/login", "/protests/list/**", "/v2/api-docs", "/configuration/ui",
-			    "/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/webjars/**")
+	    http.csrf().disable().addFilterAfter(filter, UsernamePasswordAuthenticationFilter.class).authorizeRequests()
+		    .antMatchers(HttpMethod.POST).permitAll()
+		    .antMatchers("/login", "/protests/**", "/v2/api-docs", "/configuration/ui", "/swagger-resources/**",
+			    "/configuration/security", "/swagger-ui.html", "/webjars/**")
 		    .permitAll().anyRequest().authenticated();
-	}
-
-	@Bean
-	public Filter customPreAuthSecurityFilter() {
-	    return new JWTAuthorizationFilter();
 	}
     }
 

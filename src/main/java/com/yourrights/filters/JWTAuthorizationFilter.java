@@ -17,10 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.yourrights.repository.beans.UserEntity;
 import com.yourrights.services.UserService;
@@ -43,12 +41,12 @@ public class JWTAuthorizationFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 	    throws IOException, ServletException {
-	SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+//	SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 	try {
 	    if (existsJWTToken((HttpServletRequest) request, (HttpServletResponse) response)) {
 		Claims claims = validateToken((HttpServletRequest) request);
 		if (claims.get("authorities") != null) {
-		    setUpSpringAuthentication(claims);
+		    setUpSpringAuthentication(claims, (HttpServletRequest) request);
 		} else {
 		    SecurityContextHolder.clearContext();
 		}
@@ -77,13 +75,21 @@ public class JWTAuthorizationFilter implements Filter {
      * Metodo para autenticarnos dentro del flujo de Spring
      * 
      * @param claims
+     * @param request
      */
-    private void setUpSpringAuthentication(Claims claims) {
+    private void setUpSpringAuthentication(Claims claims, HttpServletRequest request) {
 	@SuppressWarnings("unchecked")
 	List<String> authorities = (List<String>) claims.get("authorities");
 
 	UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(claims.getSubject(), null,
 		authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
+
+	String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");
+	UserEntity userEntity = userService.getUser(jwtToken);
+	Map<String, Object> info = new HashMap<String, Object>();
+	info.put("user", userEntity);
+	((AbstractAuthenticationToken) auth).setDetails(info);
+	SecurityContextHolder.getContext().setAuthentication(auth);
 	SecurityContextHolder.getContext().setAuthentication(auth);
 
     }
@@ -92,15 +98,6 @@ public class JWTAuthorizationFilter implements Filter {
 	String authenticationHeader = request.getHeader(HEADER);
 	if (authenticationHeader == null || !authenticationHeader.startsWith(PREFIX))
 	    return false;
-
-	UserEntity userEntity = userService.getUser(authenticationHeader);
-	if (userEntity == null)
-	    return false;
-
-	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-	Map<String, Object> info = new HashMap<String, Object>();
-	info.put("user", userEntity);
-	((AbstractAuthenticationToken) auth).setDetails(info);
 
 	return true;
     }

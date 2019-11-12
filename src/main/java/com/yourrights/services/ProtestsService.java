@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.BeanUtils;
@@ -14,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.yourrights.beans.Protest;
@@ -24,6 +28,7 @@ import com.yourrights.exceptions.ProtestsException;
 import com.yourrights.repository.ProtestsRepository;
 import com.yourrights.repository.beans.LocationEntity;
 import com.yourrights.repository.beans.ProtestEntity;
+import com.yourrights.repository.beans.UserEntity;
 
 @Service
 public class ProtestsService {
@@ -33,10 +38,14 @@ public class ProtestsService {
 
     public void createProtest(Protest protest) {
 
+	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	Map<String, Object> info = (Map<String, Object>) ((AbstractAuthenticationToken) auth).getDetails();
+	UserEntity userEntity = (UserEntity) info.get("user");
+
 	if (validateProtest(protest)) {
 	    ProtestEntity protestEntity = new ProtestEntity();
 	    BeanUtils.copyProperties(protest, protestEntity);
-	    protestEntity.setProtestsType(protest.getProtestType().name());
+	    protestEntity.setProtestType(protest.getProtestType().name());
 	    protestEntity.setUserType(protest.getUserType().name());
 	    Set<LocationEntity> locationsProtest = new HashSet<LocationEntity>();
 	    for (int i = 0; i < protest.getLocationsProtest().size(); i++) {
@@ -46,6 +55,7 @@ public class ProtestsService {
 		locationsProtest.add(locEntity);
 	    }
 	    protestEntity.setLocationsProtest(locationsProtest);
+	    protestEntity.setUserId(userEntity.getId());
 
 	    ProtestEntity result = repository.save(protestEntity);
 	    System.out.println();
@@ -100,6 +110,12 @@ public class ProtestsService {
 
     public Protests searchProtest(SearchRequest request) {
 	List<Protest> protestList = new ArrayList<Protest>();
+	repository.findByCityAndWhoDefendsAndDate(request.getCity(), null, null).forEach(entity -> {
+	    Protest p = new Protest();
+	    BeanUtils.copyProperties(entity, p);
+	    protestList.add(p);
+	});
+
 	repository.findByCity(request.getCity()).forEach(entity -> {
 	    Protest p = new Protest();
 	    BeanUtils.copyProperties(entity, p);

@@ -23,7 +23,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "protests")
+@Table(name = "PROTESTS")
 @Getter
 @Setter
 public class ProtestEntity implements Serializable {
@@ -31,29 +31,31 @@ public class ProtestEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @Column(name = "name")
+    @Column(name = "NAME")
     private String name;
-    @Column(name = "city")
+    @Column(name = "CITY")
     private String city;
-    @Column(name = "country")
+    @Column(name = "COUNTRY")
     private String country;
-    @Column(name = "whoDefends")
+    @Column(name = "WHODEFENDS")
     private String whoDefends;
-    @Column(name = "promotedBy")
+    @Column(name = "PROMOTEDBY")
     private String promotedBy;
-    @Column(name = "date")
+    @Column(name = "DATE")
     @Temporal(TemporalType.DATE)
     private Date date;
-    @Column(name = "area")
+    @Column(name = "AREA")
     private String area;
-    @Column(name = "time")
+    @Column(name = "TIME")
     private Date time;
-    @Column(name = "document")
+    @Column(name = "DOCUMENT")
     private byte[] document;
-    @Column(name = "protestsType")
-    private String protestsType;
-    @Column(name = "userType")
+    @Column(name = "PROTESTTYPE")
+    private String protestType;
+    @Column(name = "USERTYPE")
     private String userType;
+    @Column(name = "USERID")
+    private long userId;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "protests_locations", joinColumns = { @JoinColumn(name = "protest_id") }, inverseJoinColumns = {

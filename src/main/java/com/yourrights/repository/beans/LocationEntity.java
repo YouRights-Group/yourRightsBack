@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "locations")
+@Table(name = "LOCATIONS")
 @Getter
 @Setter
 public class LocationEntity implements Serializable {
@@ -24,12 +24,12 @@ public class LocationEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "latitude")
+    @Column(name = "LATITUDE")
     private double latitude;
-    @Column(name = "longitude")
+    @Column(name = "LONGITUDE")
     private double longitude;
-    @Column(name = "protestId")
+    @Column(name = "PROTESTID")
     private long protestId;
-    @Column(name = "pointNumber")
+    @Column(name = "POINTNUMBER")
     private long pointNumber;
 }
