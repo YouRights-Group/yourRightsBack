@@ -15,10 +15,14 @@ spring:
       hibernate:
         jdbc:
           lob:
-            non_contextual_creation: true 
+            non_contextual_creation: true
+          time_zone: UTC
   datasource:
     platform: postgres
     url: jdbc:postgresql://database-yourrights.cbyqx4iadwwj.us-east-2.rds.amazonaws.com:8181/yourrightsdb
     username: yourrightsadmin
     password: yourrightsadmin
+    
+config:
+  maxNumPage: 20
     

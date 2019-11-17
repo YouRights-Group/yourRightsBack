@@ -19,7 +19,7 @@ public interface ProtestsRepository extends CrudRepository<ProtestEntity, Long> 
 
     List<ProtestEntity> findByCity(String city);
 
-    List<ProtestEntity> findByCityAndWhoDefendsAndDate(String city, String whoDefends, Date date);
+    List<ProtestEntity> findByCityAndDefenseSectorAndDate(String city, String defenseSector, Date date);
 
-    List<ProtestEntity> findByCityAndDateAndTime(String city, Date date, Date time);
+    List<ProtestEntity> findByCityAndDate(String city, Date date);
 }

@@ -1,9 +1,8 @@
 package com.yourrights.services;
 
-import java.time.LocalDate;
 import java.time.Month;
-import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -20,11 +19,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.yourrights.beans.ConfigProperties;
 import com.yourrights.beans.Protest;
 import com.yourrights.beans.Protests;
 import com.yourrights.beans.SearchRequest;
 import com.yourrights.constants.Constants;
 import com.yourrights.exceptions.ProtestsException;
+import com.yourrights.repository.LocationRepository;
 import com.yourrights.repository.ProtestsRepository;
 import com.yourrights.repository.beans.LocationEntity;
 import com.yourrights.repository.beans.ProtestEntity;
@@ -34,7 +35,12 @@ import com.yourrights.repository.beans.UserEntity;
 public class ProtestsService {
 
     @Autowired
-    private ProtestsRepository repository;
+    private ProtestsRepository protestsRepository;
+    @Autowired
+    private LocationRepository locationRepository;
+
+    @Autowired
+    private ConfigProperties properties;
 
     public void createProtest(Protest protest) {
 
@@ -51,25 +57,34 @@ public class ProtestsService {
 	    for (int i = 0; i < protest.getLocationsProtest().size(); i++) {
 		LocationEntity locEntity = new LocationEntity();
 		BeanUtils.copyProperties(protest.getLocationsProtest().get(0), locEntity);
-		locEntity.setPointNumber(0);
+		locEntity = checkExistedLocation(locEntity);
+		locEntity.setPointNumber(i);
 		locationsProtest.add(locEntity);
 	    }
 	    protestEntity.setLocationsProtest(locationsProtest);
 	    protestEntity.setUserId(userEntity.getId());
 
-	    ProtestEntity result = repository.save(protestEntity);
-	    System.out.println();
+	    protestsRepository.save(protestEntity);
 	}
+    }
+
+    private LocationEntity checkExistedLocation(LocationEntity locEntity) {
+	List<LocationEntity> locationsExisted = locationRepository.findByLatitudeAndLongitude(locEntity.getLatitude(),
+		locEntity.getLongitude());
+	if (!locationsExisted.isEmpty()) {
+	    locEntity = locationsExisted.get(0);
+	}
+	return locEntity;
     }
 
     private boolean validateProtest(Protest protest) {
 	// Validation 1: Protest with same city, whoDefends and date.
-	List<ProtestEntity> list = repository.findByCityAndWhoDefendsAndDate(protest.getCity(), protest.getWhoDefends(),
-		protest.getDate());
+	List<ProtestEntity> list = protestsRepository.findByCityAndDefenseSectorAndDate(protest.getCity(),
+		protest.getDefenseSector(), protest.getDate());
 	if (list.size() > 0)
 	    throw new ProtestsException(Constants.WARNING, Constants.WAR_001, "Protest very similar");
 	// Validation 2: Protest at same time in same city
-	list = repository.findByCityAndDateAndTime(protest.getCity(), protest.getDate(), protest.getTime());
+	list = protestsRepository.findByCityAndDate(protest.getCity(), protest.getDate());
 	if (list.size() > 0)
 	    throw new ProtestsException(Constants.WARNING, Constants.WAR_002,
 		    "Protest in the same city at the same time");
@@ -78,45 +93,44 @@ public class ProtestsService {
 
     public Protests getProtests(int pos) {
 	List<Protest> protestList = new ArrayList<Protest>();
-	Pageable pageable = PageRequest.of(pos + 0, pos + 20);
-	Page<ProtestEntity> page = repository.findAll(pageable);
+	Pageable pageable = PageRequest.of(pos + 0, pos + properties.getNumMaxPage());
+	Page<ProtestEntity> page = protestsRepository.findAll(pageable);
 	page.getContent().forEach(entity -> {
 	    Protest p = new Protest();
 	    p.setCity(entity.getCity());
 	    p.setName(entity.getName());
 	    p.setDate(entity.getDate());
-	    p.setWhoDefends(entity.getWhoDefends());
+	    p.setDefenseSector(entity.getDefenseSector());
 	    p.setPromotedBy(entity.getPromotedBy());
 	    p.setMonth(getMonth(entity.getDate()));
 	    protestList.add(p);
 	});
 
-	// TODO: por paginación
 	Protests protests = new Protests();
 	protests.setProtests(protestList);
 	return protests;
     }
 
     public Protest getProtest(long id) {
-	ProtestEntity protestEntity = repository.findById(id);
+	ProtestEntity protestEntity = protestsRepository.findById(id);
 	Protest protest = new Protest();
 	BeanUtils.copyProperties(protestEntity, protest);
 	return protest;
     }
 
     public void deleteProtest(long id) {
-	repository.deleteById(id);
+	protestsRepository.deleteById(id);
     }
 
     public Protests searchProtest(SearchRequest request) {
 	List<Protest> protestList = new ArrayList<Protest>();
-	repository.findByCityAndWhoDefendsAndDate(request.getCity(), null, null).forEach(entity -> {
+	protestsRepository.findByCityAndDefenseSectorAndDate(request.getCity(), null, null).forEach(entity -> {
 	    Protest p = new Protest();
 	    BeanUtils.copyProperties(entity, p);
 	    protestList.add(p);
 	});
 
-	repository.findByCity(request.getCity()).forEach(entity -> {
+	protestsRepository.findByCity(request.getCity()).forEach(entity -> {
 	    Protest p = new Protest();
 	    BeanUtils.copyProperties(entity, p);
 	    protestList.add(p);
@@ -127,8 +141,9 @@ public class ProtestsService {
     }
 
     private String getMonth(Date date) {
-	LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-	int month = localDate.getMonthValue();
+	Calendar calendar = Calendar.getInstance();
+	calendar.setTime(date);
+	int month = calendar.get(Calendar.MONTH);
 	return Month.values()[month - 1].name();
     }
 

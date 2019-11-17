@@ -37,17 +37,18 @@ public class ProtestEntity implements Serializable {
     private String city;
     @Column(name = "COUNTRY")
     private String country;
-    @Column(name = "WHODEFENDS")
-    private String whoDefends;
+    @Column(name = "DEFENSESECTOR")
+    private String defenseSector;
     @Column(name = "PROMOTEDBY")
     private String promotedBy;
     @Column(name = "DATE")
     @Temporal(TemporalType.DATE)
     private Date date;
+    @Column(name = "TIME")
+    @Temporal(TemporalType.TIME)
+    private Date time;
     @Column(name = "AREA")
     private String area;
-    @Column(name = "TIME")
-    private Date time;
     @Column(name = "DOCUMENT")
     private byte[] document;
     @Column(name = "PROTESTTYPE")
