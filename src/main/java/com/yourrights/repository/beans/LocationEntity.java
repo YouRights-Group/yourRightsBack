@@ -1,12 +1,14 @@
 package com.yourrights.repository.beans;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -28,8 +30,7 @@ public class LocationEntity implements Serializable {
     private double latitude;
     @Column(name = "LONGITUDE")
     private double longitude;
-    @Column(name = "PROTESTID")
-    private long protestId;
-    @Column(name = "POINTNUMBER")
-    private long pointNumber;
+
+    @OneToMany(mappedBy = "location")
+    Set<ProtestLocationEntity> protestsLocations;
 }

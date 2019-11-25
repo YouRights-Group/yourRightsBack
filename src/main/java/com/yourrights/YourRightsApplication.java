@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.yourrights.beans.ConfigProperties;
 import com.yourrights.filters.JWTAuthorizationFilter;
 
 @SpringBootApplication
@@ -27,10 +26,10 @@ public class YourRightsApplication {
 	return new JWTAuthorizationFilter();
     }
 
-    @Bean
-    public ConfigProperties getConfigProperties() {
-	return new ConfigProperties();
-    }
+//    @Bean
+//    public ConfigProperties getConfigProperties() {
+//	return new ConfigProperties();
+//    }
 
     @EnableWebSecurity
     @Configuration

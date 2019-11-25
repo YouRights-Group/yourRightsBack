@@ -20,15 +20,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.yourrights.beans.ConfigProperties;
+import com.yourrights.beans.Location;
 import com.yourrights.beans.Protest;
+import com.yourrights.beans.ProtestType;
 import com.yourrights.beans.Protests;
 import com.yourrights.beans.SearchRequest;
+import com.yourrights.beans.UserType;
 import com.yourrights.constants.Constants;
 import com.yourrights.exceptions.ProtestsException;
 import com.yourrights.repository.LocationRepository;
+import com.yourrights.repository.ProtestsLocationsRepository;
 import com.yourrights.repository.ProtestsRepository;
 import com.yourrights.repository.beans.LocationEntity;
 import com.yourrights.repository.beans.ProtestEntity;
+import com.yourrights.repository.beans.ProtestLocationEntity;
 import com.yourrights.repository.beans.UserEntity;
 
 @Service
@@ -38,6 +43,8 @@ public class ProtestsService {
     private ProtestsRepository protestsRepository;
     @Autowired
     private LocationRepository locationRepository;
+    @Autowired
+    private ProtestsLocationsRepository protestsLocationsRepository;
 
     @Autowired
     private ConfigProperties properties;
@@ -53,18 +60,26 @@ public class ProtestsService {
 	    BeanUtils.copyProperties(protest, protestEntity);
 	    protestEntity.setProtestType(protest.getProtestType().name());
 	    protestEntity.setUserType(protest.getUserType().name());
+
+	    protestEntity.setUserId(userEntity.getId());
+	    protestEntity = protestsRepository.save(protestEntity);
+
 	    Set<LocationEntity> locationsProtest = new HashSet<LocationEntity>();
+	    List<ProtestLocationEntity> protestLocationEntityList = new ArrayList<ProtestLocationEntity>();
 	    for (int i = 0; i < protest.getLocationsProtest().size(); i++) {
 		LocationEntity locEntity = new LocationEntity();
-		BeanUtils.copyProperties(protest.getLocationsProtest().get(0), locEntity);
+		BeanUtils.copyProperties(protest.getLocationsProtest().get(i), locEntity);
 		locEntity = checkExistedLocation(locEntity);
-		locEntity.setPointNumber(i);
 		locationsProtest.add(locEntity);
-	    }
-	    protestEntity.setLocationsProtest(locationsProtest);
-	    protestEntity.setUserId(userEntity.getId());
 
-	    protestsRepository.save(protestEntity);
+		ProtestLocationEntity protestLocationEntity = new ProtestLocationEntity();
+		protestLocationEntity.setLocation(locEntity);
+		protestLocationEntity.setProtest(protestEntity);
+		protestLocationEntity.setIndex(i);
+		protestLocationEntityList.add(protestLocationEntity);
+	    }
+
+	    protestsLocationsRepository.saveAll(protestLocationEntityList);
 	}
     }
 
@@ -73,6 +88,8 @@ public class ProtestsService {
 		locEntity.getLongitude());
 	if (!locationsExisted.isEmpty()) {
 	    locEntity = locationsExisted.get(0);
+	} else {
+	    locEntity = locationRepository.save(locEntity);
 	}
 	return locEntity;
     }
@@ -115,6 +132,21 @@ public class ProtestsService {
 	ProtestEntity protestEntity = protestsRepository.findById(id);
 	Protest protest = new Protest();
 	BeanUtils.copyProperties(protestEntity, protest);
+
+	// Obtener los meses
+	protest.setProtestType(ProtestType.valueOf(protestEntity.getProtestType()));
+	protest.setUserType(UserType.valueOf(protestEntity.getUserType()));
+
+	List<ProtestLocationEntity> locationsEntityList = protestsLocationsRepository.findByProtestId(id);
+	List<Location> locations = new ArrayList<Location>();
+	for (ProtestLocationEntity protestLocationEntity : locationsEntityList) {
+	    LocationEntity locationEntity = protestLocationEntity.getLocation();
+	    Location location = new Location();
+	    BeanUtils.copyProperties(locationEntity, location);
+	    location.setPointNumber(protestLocationEntity.getIndex());
+	    locations.add(location);
+	}
+	protest.setLocationsProtest(locations);
 	return protest;
     }
 
