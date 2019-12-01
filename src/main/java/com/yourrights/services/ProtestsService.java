@@ -9,11 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,6 +37,8 @@ import com.yourrights.repository.beans.LocationEntity;
 import com.yourrights.repository.beans.ProtestEntity;
 import com.yourrights.repository.beans.ProtestLocationEntity;
 import com.yourrights.repository.beans.UserEntity;
+import com.yourrights.repository.specifications.ProtestsSpecification;
+import com.yourrights.repository.specifications.SearchCriteria;
 
 @Service
 public class ProtestsService {
@@ -60,6 +64,7 @@ public class ProtestsService {
 	    BeanUtils.copyProperties(protest, protestEntity);
 	    protestEntity.setProtestType(protest.getProtestType().name());
 	    protestEntity.setUserType(protest.getUserType().name());
+	    protestEntity.setMonth(getMonth(protest.getDate()));
 
 	    protestEntity.setUserId(userEntity.getId());
 	    protestEntity = protestsRepository.save(protestEntity);
@@ -108,9 +113,9 @@ public class ProtestsService {
 	return true;
     }
 
-    public Protests getProtests(int pos) {
+    public Protests getProtests(int pageIndex) {
 	List<Protest> protestList = new ArrayList<Protest>();
-	Pageable pageable = PageRequest.of(pos + 0, pos + properties.getNumMaxPage());
+	Pageable pageable = PageRequest.of(pageIndex, pageIndex + properties.getMaxNumPage());
 	Page<ProtestEntity> page = protestsRepository.findAll(pageable);
 	page.getContent().forEach(entity -> {
 	    Protest p = new Protest();
@@ -155,18 +160,37 @@ public class ProtestsService {
     }
 
     public Protests searchProtest(SearchRequest request) {
-	List<Protest> protestList = new ArrayList<Protest>();
-	protestsRepository.findByCityAndDefenseSectorAndDate(request.getCity(), null, null).forEach(entity -> {
-	    Protest p = new Protest();
-	    BeanUtils.copyProperties(entity, p);
-	    protestList.add(p);
-	});
 
-	protestsRepository.findByCity(request.getCity()).forEach(entity -> {
-	    Protest p = new Protest();
-	    BeanUtils.copyProperties(entity, p);
-	    protestList.add(p);
-	});
+	List<Protest> protestList = new ArrayList<Protest>();
+	ProtestsSpecification specCity = new ProtestsSpecification();
+	if (!StringUtils.isEmpty(request.getCity())) {
+	    specCity = new ProtestsSpecification(new SearchCriteria("city", ":", request.getCity()));
+	}
+	ProtestsSpecification specDate = new ProtestsSpecification();
+	if (request.getDate() != null) {
+	    specDate = new ProtestsSpecification(new SearchCriteria("date", ":", request.getDate()));
+	}
+	ProtestsSpecification specArea = new ProtestsSpecification();
+	if (request.getArea() != null) {
+	    specArea = new ProtestsSpecification(new SearchCriteria("area", ":", request.getArea()));
+	}
+	ProtestsSpecification specCountry = new ProtestsSpecification();
+	if (request.getCountry() != null) {
+	    specCountry = new ProtestsSpecification(new SearchCriteria("country", ":", request.getCountry()));
+	}
+	ProtestsSpecification specMonth = new ProtestsSpecification();
+	if (request.getMonth() != null) {
+	    specMonth = new ProtestsSpecification(new SearchCriteria("month", ":", request.getMonth()));
+	}
+
+	protestsRepository
+		.findAll(Specification.where(specCity).and(specDate).and(specArea).and(specCountry).and(specMonth))
+		.forEach(entity -> {
+		    Protest p = new Protest();
+		    BeanUtils.copyProperties(entity, p);
+		    protestList.add(p);
+		});
+
 	Protests protests = new Protests();
 	protests.setProtests(protestList);
 	return protests;

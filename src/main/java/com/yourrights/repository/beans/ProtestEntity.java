@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +23,7 @@ import lombok.Setter;
 @Table(name = "PROTESTS")
 @Getter
 @Setter
+@DynamicUpdate
 public class ProtestEntity implements Serializable {
     private static final long serialVersionUID = -2343243243242432341L;
     @Id
@@ -42,6 +45,8 @@ public class ProtestEntity implements Serializable {
     @Column(name = "TIME")
     @Temporal(TemporalType.TIME)
     private Date time;
+    @Column(name = "MONTH")
+    private String month;
     @Column(name = "AREA")
     private String area;
     @Column(name = "DOCUMENT")

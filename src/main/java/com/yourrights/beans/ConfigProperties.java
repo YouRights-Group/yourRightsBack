@@ -12,5 +12,5 @@ import lombok.Setter;
 @Setter
 public class ConfigProperties {
 
-    private Integer numMaxPage;
+    private Integer maxNumPage;
 }

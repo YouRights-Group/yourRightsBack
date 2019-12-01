@@ -33,9 +33,9 @@ public class ProtestsController {
 	protestService.createProtest(protest);
     }
 
-    @GetMapping(value = Constants.LIST + "/{pos}")
-    public Protests getProtests(@PathVariable("pos") int pos) {
-	return protestService.getProtests(pos);
+    @GetMapping(value = Constants.LIST + "/{page}")
+    public Protests getProtests(@PathVariable("page") int page) {
+	return protestService.getProtests(page - 1);
     }
 
     @GetMapping(value = "{id}")

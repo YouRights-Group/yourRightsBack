@@ -9,7 +9,7 @@ public class Constants {
     public static final String LOGIN = "/login";
     public static final String SIGN_UP = "/sign-up";
 
-    public static final String FORMAT_DD_MM_YYYY = "dd-MM-YYYY";
+    public static final String FORMAT_DD_MM_YYYY = "dd-MM-yyyy";
     public static final String FORMAT_HH_MM = "HH:mm";
 
     public static final String ERROR = "error";
