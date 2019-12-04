@@ -22,6 +22,17 @@ spring:
     url: jdbc:postgresql://database-yourrights.cbyqx4iadwwj.us-east-2.rds.amazonaws.com:8181/yourrightsdb
     username: yourrightsadmin
     password: yourrightsadmin
+  mail:
+    default-encoding: UTF-8
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          socketFactory:
+            port: 25
+            class: javax.net.ssl.SSLSocketFactory
+    protocol: smtp
     
 config:
   maxNumPage: 20

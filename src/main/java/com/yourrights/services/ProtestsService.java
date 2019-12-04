@@ -42,6 +42,7 @@ import com.yourrights.repository.beans.ProtestLocationEntity;
 import com.yourrights.repository.beans.UserEntity;
 import com.yourrights.repository.specifications.ProtestsSpecification;
 import com.yourrights.repository.specifications.SearchCriteria;
+import com.yourrights.utils.SecurityContextUtils;
 
 @Service
 public class ProtestsService {
@@ -60,9 +61,7 @@ public class ProtestsService {
 
     public void createProtest(Protest protest) {
 
-	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-	Map<String, Object> info = (Map<String, Object>) ((AbstractAuthenticationToken) auth).getDetails();
-	UserEntity userEntity = (UserEntity) info.get("user");
+	UserEntity userEntity = SecurityContextUtils.getUser();
 
 	if (validateProtest(protest)) {
 	    ProtestEntity protestEntity = new ProtestEntity();
@@ -92,6 +91,8 @@ public class ProtestsService {
 	    protestsLocationsRepository.saveAll(protestLocationEntityList);
 	}
     }
+
+    
 
     private LocationEntity checkExistedLocation(LocationEntity locEntity) {
 	List<LocationEntity> locationsExisted = locationRepository.findByLatitudeAndLongitude(locEntity.getLatitude(),
