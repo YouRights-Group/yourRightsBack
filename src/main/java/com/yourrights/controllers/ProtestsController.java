@@ -48,12 +48,6 @@ public class ProtestsController {
 	return protestService.searchProtest(request);
     }
 
-    // TODO: por nombre
-    // TODO: Ciudad
-    // TODO: por fecha
-    // TODO: por país
-    // TODO: por area
-
     @DeleteMapping(value = "delete/" + "/{id}")
     public void deleteProtest(@PathVariable("id") long id) {
 	protestService.deleteProtest(id);

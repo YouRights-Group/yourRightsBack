@@ -13,19 +13,19 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@JsonInclude(Include.NON_NULL)
 public class SearchRequest implements Serializable {
 
     private static final long serialVersionUID = -6647255806255032146L;
 
-    @JsonInclude(Include.NON_NULL)
+    
     private String city;
-    @JsonInclude(Include.NON_NULL)
     private String country;
-    @JsonInclude(Include.NON_NULL)
     @JsonFormat(pattern = Constants.FORMAT_DD_MM_YYYY)
-    private Date date;
-    @JsonInclude(Include.NON_NULL)
+    private Date from;
+    @JsonFormat(pattern = Constants.FORMAT_DD_MM_YYYY)
+    private Date to;
     private String area;
-    @JsonInclude(Include.NON_NULL)
     private String month;
+    private int pageIndex;
 }

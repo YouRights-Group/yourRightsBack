@@ -1,10 +1,13 @@
 package com.yourrights.repository.specifications;
 
+import java.util.Date;
+
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.criterion.Restrictions;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.yourrights.repository.beans.ProtestEntity;
@@ -38,6 +41,8 @@ public class ProtestsSpecification implements Specification<ProtestEntity> {
 	    } else {
 		return builder.equal(root.get(criteria.getKey()), criteria.getValue());
 	    }
+	} else if (criteria.getOperation().equalsIgnoreCase("compare")) {
+	    return builder.between(root.<Date>get(criteria.getKey()), criteria.getFrom(), criteria.getTo());
 	}
 	return null;
     }

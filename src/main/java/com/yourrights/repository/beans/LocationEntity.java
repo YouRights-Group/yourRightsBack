@@ -26,9 +26,9 @@ public class LocationEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "LATITUDE")
+    @Column(name = "LATITUDE", precision=9, scale=7)
     private double latitude;
-    @Column(name = "LONGITUDE")
+    @Column(name = "LONGITUDE", precision=9, scale=7)
     private double longitude;
 
     @OneToMany(mappedBy = "location")
