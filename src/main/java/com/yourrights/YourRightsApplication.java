@@ -6,11 +6,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.yourrights.constants.Constants;
 import com.yourrights.filters.JWTAuthorizationFilter;
 
 @SpringBootApplication
@@ -24,6 +27,11 @@ public class YourRightsApplication {
     @Bean
     public JWTAuthorizationFilter getFilterBean() {
 	return new JWTAuthorizationFilter();
+    }
+
+    @Bean
+    public JavaMailSender getMailServer() {
+	return new JavaMailSenderImpl();
     }
 
 //    @Bean
@@ -43,8 +51,9 @@ public class YourRightsApplication {
 
 	    http.csrf().disable().addFilterAfter(filter, UsernamePasswordAuthenticationFilter.class).authorizeRequests()
 		    .antMatchers(HttpMethod.POST).permitAll().antMatchers(HttpMethod.GET).permitAll()
-		    .antMatchers("/login", "/v2/api-docs", "/configuration/ui", "/swagger-resources/**",
-			    "/configuration/security", "/swagger-ui.html", "/webjars/**")
+		    .antMatchers(Constants.LOGIN, Constants.REGENERATE_PWD, Constants.FORGOT_PWD, "/v2/api-docs",
+			    "/configuration/ui", "/swagger-resources/**", "/configuration/security", "/swagger-ui.html",
+			    "/webjars/**")
 		    .permitAll().anyRequest().authenticated();
 	}
     }

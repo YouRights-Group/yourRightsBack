@@ -26,9 +26,12 @@ spring:
     default-encoding: UTF-8
     properties:
       mail:
+        host: smtp.gmail.com
+        port: 587
         transport:
           protocol: smtp
         smtp:
+          auth: false
           socketFactory:
             port: 25
             class: javax.net.ssl.SSLSocketFactory
@@ -36,4 +39,8 @@ spring:
     
 config:
   maxNumPage: 20
+  security:
+    secretKey: 'krlAaJ714XQm6V9iofE4'
+    encryptPwd: 'nSsFlEN5R72IwA2bjrM5'
+    encryptSalt: 'SBieDFJTiGYFt1qDf7So'
     
