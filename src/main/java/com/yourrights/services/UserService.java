@@ -16,8 +16,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.crypto.encrypt.Encryptors;
-import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.stereotype.Service;
 
 import com.yourrights.beans.RegeneratePWDBean;
@@ -37,6 +35,8 @@ public class UserService {
     private UserRepository repository;
     @Autowired
     private JavaMailSender mailSender;
+    @Autowired
+    private EncryptService encryptService;
 
     @Value("${config.security.secretKey}")
     private String secretKey;
@@ -98,9 +98,7 @@ public class UserService {
     }
 
     private String passwordHash(String email) {
-
-	TextEncryptor encryptor = Encryptors.text(encryptPwd, encryptSalt);
-	return encryptor.encrypt(email);
+	return encryptService.encrypt(email);
     }
 
     public String getJWTToken(String username) {
@@ -118,8 +116,7 @@ public class UserService {
     }
 
     public void regeneratePassword(RegeneratePWDBean regeneratePwdBean) {
-	TextEncryptor encryptor = Encryptors.text(encryptPwd, encryptSalt);
-	String email = encryptor.decrypt(regeneratePwdBean.getToken());
+	String email = encryptService.decrypt(regeneratePwdBean.getToken());
 	UserEntity userEntity = repository.findByEmail(email);
 	userEntity.setPassword(regeneratePwdBean.getNewPassword());
 	repository.save(userEntity);

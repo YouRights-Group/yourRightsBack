@@ -27,7 +27,9 @@ spring:
     properties:
       mail:
         host: smtp.gmail.com
-        port: 587
+        port: 465
+        user: anaromanrodriguez1987@gmail.com
+        password: 100061851
         transport:
           protocol: smtp
         smtp:
@@ -41,6 +43,6 @@ config:
   maxNumPage: 20
   security:
     secretKey: 'krlAaJ714XQm6V9iofE4'
-    encryptPwd: 'nSsFlEN5R72IwA2bjrM5'
-    encryptSalt: 'SBieDFJTiGYFt1qDf7So'
+    encryptPwd: 'password'
+    encryptSalt: 'salt'
     
