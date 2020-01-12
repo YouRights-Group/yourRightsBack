@@ -79,19 +79,30 @@ public class UserService {
     }
 
     public void forgotPassword(String email) throws MessagingException {
+
+//	SimpleMailMessage msg = new SimpleMailMessage();
+//	msg.setTo(email);
+//
+//	msg.setSubject("Testing from Spring Boot");
+//	msg.setText("Hello World \n Spring Boot Email");
+//
+//	mailSender.send(msg);
+
 	MimeMessage message = mailSender.createMimeMessage();
 	MimeMessageHelper helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
 	String token = passwordHash(email);
 	helper.setTo(new InternetAddress(email));
 	helper.setReplyTo("yourrights@yourrights.com");
 	helper.setFrom("yourrights@yourrights.com");
-	String subject = "Restaurar sesión " + token;
+	String subject = "Restaurar sesión";
 	Pattern p1 = Pattern.compile("\\r");
 	Pattern p2 = Pattern.compile("\\n");
 	p1.matcher(subject).replaceAll("");
 	p2.matcher(subject).replaceAll("");
 	helper.setSubject(subject);
-	helper.setText("Pulsa en este enlace para actualizar tu constraseña", true);
+	helper.setText("Pulsa en este enlace para actualizar tu constraseña: \n http://yourRighst/forgotPassword.html/"
+		+ token, true);
+
 	// helper.addInline(ExportConstants.NAME_HEADER_IMAGE, new
 	// ClassPathResource(ExportConstants.NAME_HEADER_IMAGE));
 	mailSender.send(message);

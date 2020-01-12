@@ -1,5 +1,7 @@
 package com.yourrights;
 
+import java.util.Properties;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,7 +19,6 @@ import com.yourrights.constants.Constants;
 import com.yourrights.filters.JWTAuthorizationFilter;
 
 @SpringBootApplication
-//@EnableJpaRepositories("com.yourrights.repository")
 public class YourRightsApplication {
 
     public static void main(String[] args) {
@@ -31,13 +32,21 @@ public class YourRightsApplication {
 
     @Bean
     public JavaMailSender getMailServer() {
-	return new JavaMailSenderImpl();
-    }
+	JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+	mailSender.setHost("smtp.gmail.com");
+	mailSender.setPort(587);
 
-//    @Bean
-//    public ConfigProperties getConfigProperties() {
-//	return new ConfigProperties();
-//    }
+	mailSender.setUsername("anaromanrodriguez1987@gmail.com");
+	mailSender.setPassword("pdzgnvomtstzrprp");
+
+	Properties props = mailSender.getJavaMailProperties();
+	props.put("mail.transport.protocol", "smtp");
+	props.put("mail.smtp.auth", "true");
+	props.put("mail.smtp.starttls.enable", "true");
+	props.put("mail.debug", "true");
+
+	return mailSender;
+    }
 
     @EnableWebSecurity
     @Configuration

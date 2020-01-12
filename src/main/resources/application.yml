@@ -22,23 +22,18 @@ spring:
     url: jdbc:postgresql://database-yourrights.cbyqx4iadwwj.us-east-2.rds.amazonaws.com:8181/yourrightsdb
     username: yourrightsadmin
     password: yourrightsadmin
-  mail:
-    default-encoding: UTF-8
-    properties:
-      mail:
-        host: smtp.gmail.com
-        port: 465
-        user: anaromanrodriguez1987@gmail.com
-        password: 100061851
-        transport:
-          protocol: smtp
-        smtp:
-          auth: false
-          socketFactory:
-            port: 25
-            class: javax.net.ssl.SSLSocketFactory
-    protocol: smtp
-    
+
+#spring.mail.host: smtp.gmail.com
+#spring.mail.port: 465
+#spring.mail.username: anaromanrodriguez1987@gmail.com
+#spring.mail.password: 100061851
+#spring.mail.properties.mail.smtp.auth: true
+#spring.mail.properties.mail.smtp.connectiontimeout: 5000
+#spring.mail.properties.mail.smtp.timeout: 5000
+#spring.mail.properties.mail.smtp.writetimeout: 5000
+#spring.mail.properties.mail.smtp.socketFactory.port: 465
+#spring.mail.properties.mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactor
+
 config:
   maxNumPage: 20
   security:
