@@ -43,9 +43,9 @@ public class UserController {
     }
 
     @PostMapping(Constants.FORGOT_PWD)
-    public void forgotPassword(User user) {
+    public String forgotPassword(User user) {
 	try {
-	    userService.forgotPassword(user.getEmail());
+	    return userService.forgotPassword(user.getEmail());
 
 	} catch (MessagingException e) {
 	    log.error("Error send email to regenerate password");

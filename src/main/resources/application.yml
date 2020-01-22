@@ -22,15 +22,19 @@ spring:
     url: jdbc:postgresql://database-yourrights.cbyqx4iadwwj.us-east-2.rds.amazonaws.com:8181/yourrightsdb
     username: yourrightsadmin
     password: yourrightsadmin
-
-#spring.mail.host: smtp.gmail.com
-#spring.mail.port: 465
-#spring.mail.username: anaromanrodriguez1987@gmail.com
-#spring.mail.password: 100061851
-#spring.mail.properties.mail.smtp.auth: true
-#spring.mail.properties.mail.smtp.connectiontimeout: 5000
-#spring.mail.properties.mail.smtp.timeout: 5000
-#spring.mail.properties.mail.smtp.writetimeout: 5000
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: anaromanrodriguez1987@gmail.com
+    password: pdzgnvomtstzrprp
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 5000
+      mail.smtp.writetimeout: 5000
+      mail.smtp.starttls.enable: true
+      mail.transport.protocol: smtp
+#spring.mail.test-connection: false
 #spring.mail.properties.mail.smtp.socketFactory.port: 465
 #spring.mail.properties.mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactor
 

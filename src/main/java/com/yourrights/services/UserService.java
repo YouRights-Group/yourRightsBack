@@ -78,15 +78,7 @@ public class UserService {
 	return repository.findByToken(token);
     }
 
-    public void forgotPassword(String email) throws MessagingException {
-
-//	SimpleMailMessage msg = new SimpleMailMessage();
-//	msg.setTo(email);
-//
-//	msg.setSubject("Testing from Spring Boot");
-//	msg.setText("Hello World \n Spring Boot Email");
-//
-//	mailSender.send(msg);
+    public String forgotPassword(String email) throws MessagingException {
 
 	MimeMessage message = mailSender.createMimeMessage();
 	MimeMessageHelper helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
@@ -103,9 +95,8 @@ public class UserService {
 	helper.setText("Pulsa en este enlace para actualizar tu constraseña: \n http://yourRighst/forgotPassword.html/"
 		+ token, true);
 
-	// helper.addInline(ExportConstants.NAME_HEADER_IMAGE, new
-	// ClassPathResource(ExportConstants.NAME_HEADER_IMAGE));
 	mailSender.send(message);
+	return "OK";
     }
 
     private String passwordHash(String email) {
