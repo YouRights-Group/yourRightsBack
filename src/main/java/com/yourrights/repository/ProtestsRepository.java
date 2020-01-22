@@ -3,19 +3,25 @@ package com.yourrights.repository;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.yourrights.repository.beans.ProtestEntity;
 
-public interface ProtestsRepository extends CrudRepository<ProtestEntity, Long> {
+@Repository
+public interface ProtestsRepository
+	extends CrudRepository<ProtestEntity, Long>, JpaSpecificationExecutor<ProtestEntity> {
 
     ProtestEntity findById(long id);
 
-    List<ProtestEntity> findAll();
+    Page<ProtestEntity> findAll(Pageable pageable);
 
     List<ProtestEntity> findByCity(String city);
 
-    List<ProtestEntity> findByCityAndWhoDefendsAndDate(String city, String whoDefends, Date date);
+    List<ProtestEntity> findByCityAndDefenseSectorAndDate(String city, String defenseSector, Date date);
 
-    List<ProtestEntity> findByCityAndDateAndTime(String city, Date date, Date time);
+    List<ProtestEntity> findByCityAndDate(String city, Date date);
 }

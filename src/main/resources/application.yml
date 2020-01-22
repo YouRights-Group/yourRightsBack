@@ -15,10 +15,33 @@ spring:
       hibernate:
         jdbc:
           lob:
-            non_contextual_creation: true 
+            non_contextual_creation: true
+          time_zone: UTC
   datasource:
     platform: postgres
     url: jdbc:postgresql://database-yourrights.cbyqx4iadwwj.us-east-2.rds.amazonaws.com:8181/yourrightsdb
     username: yourrightsadmin
     password: yourrightsadmin
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: anaromanrodriguez1987@gmail.com
+    password: pdzgnvomtstzrprp
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 5000
+      mail.smtp.writetimeout: 5000
+      mail.smtp.starttls.enable: true
+      mail.transport.protocol: smtp
+#spring.mail.test-connection: false
+#spring.mail.properties.mail.smtp.socketFactory.port: 465
+#spring.mail.properties.mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactor
+
+config:
+  maxNumPage: 20
+  security:
+    secretKey: 'krlAaJ714XQm6V9iofE4'
+    encryptPwd: 'password'
+    encryptSalt: 'salt'
     

@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yourrights.beans.Protest;
 import com.yourrights.beans.Protests;
+import com.yourrights.beans.SearchRequest;
 import com.yourrights.constants.Constants;
 import com.yourrights.services.ProtestsService;
+
+import io.swagger.annotations.ApiImplicitParam;
 
 @RestController
 @RequestMapping(Constants.PROTEST_REST)
@@ -25,28 +28,29 @@ public class ProtestsController {
     private ProtestsService protestService;
 
     @PostMapping(Constants.CREATE)
+    @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "Bearer access_token")
     public void createProtest(@RequestBody Protest protest) {
-        protestService.createProtest(protest);
+	protestService.createProtest(protest);
     }
 
-    @GetMapping(Constants.LIST)
-    public Protests getProtests() {
-        return protestService.getProtests();
+    @GetMapping(value = Constants.LIST + "/{page}")
+    public Protests getProtests(@PathVariable("page") int page) {
+	return protestService.getProtests(page - 1);
     }
-    
+
     @GetMapping(value = "{id}")
     public Protest getProtest(@PathVariable("id") long id) {
-        return protestService.getProtest(id);
+	return protestService.getProtest(id);
     }
-    
-    @GetMapping(value = Constants.SEARCH + "/{city}")
-    public Protests searchProtest(@PathVariable("city") String city) {
-        return protestService.searchProtest(city);
+
+    @PostMapping(value = Constants.SEARCH)
+    public Protests searchProtest(@RequestBody SearchRequest request) {
+	return protestService.searchProtest(request);
     }
-    
+
     @DeleteMapping(value = "delete/" + "/{id}")
     public void deleteProtest(@PathVariable("id") long id) {
-        protestService.deleteProtest(id);
+	protestService.deleteProtest(id);
     }
-    
+
 }
