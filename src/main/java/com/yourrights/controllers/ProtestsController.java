@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,35 +24,41 @@ import io.swagger.annotations.ApiImplicitParam;
 @CrossOrigin(origins = "*")
 public class ProtestsController {
 
-	@Autowired
-	private ProtestsService protestService;
+    @Autowired
+    private ProtestsService protestService;
 
-	@PostMapping(Constants.CREATE)
-	@ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "Bearer access_token")
-	public void createProtest(@RequestBody Protest protest) {
-		protestService.createProtest(protest);
-	}
+    @PatchMapping(value = "{id}")
+    @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "Bearer access_token")
+    public void changeProtest(@RequestBody Protest protest) {
+	protestService.changeProtest(protest);
+    }
 
-	@GetMapping(value = Constants.LIST + "/{page}")
-	public Protests getProtests(@PathVariable("page") int page) {
-		return protestService.getProtests(page - 1);
-	}
+    @PostMapping(Constants.CREATE)
+    @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "Bearer access_token")
+    public void createProtest(@RequestBody Protest protest) {
+	protestService.createProtest(protest);
+    }
 
-	@GetMapping(value = "{id}")
-	@ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "Bearer access_token")
-	public Protest getProtest(@PathVariable("id") long id) {
-		return protestService.getProtest(id);
-	}
+    @DeleteMapping(value = Constants.DELETE + "/{id}")
+    @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "Bearer access_token")
+    public void deleteProtest(@PathVariable("id") long id) {
+	protestService.deleteProtest(id);
+    }
 
-	@PostMapping(value = Constants.SEARCH)
-	public Protests searchProtest(@RequestBody SearchRequest request) {
-		return protestService.searchProtest(request);
-	}
+    @GetMapping(value = "{id}")
+    @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "Bearer access_token")
+    public Protest getProtest(@PathVariable("id") long id) {
+	return protestService.getProtest(id);
+    }
 
-	@DeleteMapping(value = Constants.DELETE + "/{id}")
-	@ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "Bearer access_token")
-	public void deleteProtest(@PathVariable("id") long id) {
-		protestService.deleteProtest(id);
-	}
+    @GetMapping(value = Constants.LIST + "/{page}")
+    public Protests getProtests(@PathVariable("page") int page) {
+	return protestService.getProtests(page - 1);
+    }
+
+    @PostMapping(value = Constants.SEARCH)
+    public Protests searchProtest(@RequestBody SearchRequest request) {
+	return protestService.searchProtest(request);
+    }
 
 }

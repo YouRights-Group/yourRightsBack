@@ -18,14 +18,13 @@ public class SearchRequest implements Serializable {
 
     private static final long serialVersionUID = -6647255806255032146L;
 
-    
-    private String city;
-    private String country;
+    private String cityProtest;
+    private String countryProtest;
     @JsonFormat(pattern = Constants.FORMAT_DD_MM_YYYY)
-    private Date from;
+    private Date fromProtest;
     @JsonFormat(pattern = Constants.FORMAT_DD_MM_YYYY)
-    private Date to;
-    private String area;
-    private String month;
+    private Date toProtest;
+    private String areaProtest;
+    private String monthProtest;
     private int pageIndex;
 }

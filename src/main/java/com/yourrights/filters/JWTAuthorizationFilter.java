@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,7 +34,8 @@ public class JWTAuthorizationFilter implements Filter {
 
     private final String HEADER = "Authorization";
     private final String PREFIX = "Bearer ";
-    private final String SECRET = "mySecretKey";
+    @Value("${config.security.secretKey}")
+    private String secretKey;
 
     @Autowired
     private UserService userService;
@@ -63,17 +65,21 @@ public class JWTAuthorizationFilter implements Filter {
 //    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 //	    throws ServletException, IOException {
 //	SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-//	
+//
 //    }
 
-    private Claims validateToken(HttpServletRequest request) {
-	String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");
-	return Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(jwtToken).getBody();
+    private boolean existsJWTToken(HttpServletRequest request, HttpServletResponse res) {
+	String authenticationHeader = request.getHeader(HEADER);
+	if (authenticationHeader == null || !authenticationHeader.startsWith(PREFIX)) {
+	    return false;
+	}
+
+	return true;
     }
 
     /**
      * Metodo para autenticarnos dentro del flujo de Spring
-     * 
+     *
      * @param claims
      * @param request
      */
@@ -94,12 +100,9 @@ public class JWTAuthorizationFilter implements Filter {
 
     }
 
-    private boolean existsJWTToken(HttpServletRequest request, HttpServletResponse res) {
-	String authenticationHeader = request.getHeader(HEADER);
-	if (authenticationHeader == null || !authenticationHeader.startsWith(PREFIX))
-	    return false;
-
-	return true;
+    private Claims validateToken(HttpServletRequest request) {
+	String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");
+	return Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(jwtToken).getBody();
     }
 
 }
