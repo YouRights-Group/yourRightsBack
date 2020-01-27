@@ -14,17 +14,17 @@ import com.yourrights.filters.JWTAuthorizationFilter;
 @Configuration
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private JWTAuthorizationFilter filter;
+    @Autowired
+    private JWTAuthorizationFilter filter;
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
 
-		http.csrf().disable().addFilterAfter(filter, UsernamePasswordAuthenticationFilter.class).authorizeRequests()
-				.antMatchers(Constants.LOGIN, Constants.REGENERATE_PWD, Constants.FORGOT_PWD,
-						Constants.PROTEST_REST + Constants.LIST + "/*", Constants.PROTEST_REST + "/*", "/v2/api-docs",
-						"/configuration/ui", "/swagger-resources/**", "/configuration/security", "/swagger-ui.html",
-						"/webjars/**")
-				.permitAll().anyRequest().authenticated();
-	}
+	http.csrf().disable().addFilterAfter(filter, UsernamePasswordAuthenticationFilter.class).authorizeRequests()
+		.antMatchers(Constants.LOGIN, Constants.REGENERATE_PWD, Constants.FORGOT_PWD, Constants.SIGN_UP,
+			Constants.PROTEST_REST + Constants.LIST + "/*", Constants.PROTEST_REST + "/*", "/v2/api-docs",
+			"/configuration/ui", "/swagger-resources/**", "/configuration/security", "/swagger-ui.html",
+			"/webjars/**")
+		.permitAll().anyRequest().authenticated();
+    }
 }
