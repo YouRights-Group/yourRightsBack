@@ -1,5 +1,6 @@
 package com.yourrights.services;
 
+import java.io.IOException;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.yourrights.beans.ConfigProperties;
 import com.yourrights.beans.Location;
@@ -39,7 +41,10 @@ import com.yourrights.repository.specifications.ProtestsSpecification;
 import com.yourrights.repository.specifications.SearchCriteria;
 import com.yourrights.utils.SecurityContextUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class ProtestsService {
 
     @Autowired
@@ -76,12 +81,12 @@ public class ProtestsService {
 	UserEntity userEntity = SecurityContextUtils.getUser();
 
 	if (validateProtest(protest)) {
+
 	    ProtestEntity protestEntity = new ProtestEntity();
 	    BeanUtils.copyProperties(protest, protestEntity);
 	    protestEntity.setProtestType(protest.getProtestType().name());
 	    protestEntity.setUserType(protest.getUserType().name());
 	    protestEntity.setMonth(getMonth(protest.getDate()));
-
 	    protestEntity.setUserId(userEntity.getId());
 	    protestEntity = protestsRepository.save(protestEntity);
 
@@ -161,6 +166,21 @@ public class ProtestsService {
 	Protests protests = new Protests();
 	protests.setProtests(protestList);
 	return protests;
+    }
+
+    public void loadDocument(MultipartFile file, long id) {
+	byte[] document = null;
+	if (!file.isEmpty()) {
+	    try {
+		document = file.getBytes();
+	    } catch (IOException e) {
+		log.error("Error to read document");
+	    }
+	}
+
+	ProtestEntity protestEntity = protestsRepository.findById(id);
+	protestEntity.setDocument(document);
+	protestsRepository.save(protestEntity);
     }
 
     public Protests searchProtest(SearchRequest request) {
