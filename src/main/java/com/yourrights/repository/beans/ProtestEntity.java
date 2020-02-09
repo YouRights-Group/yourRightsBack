@@ -15,6 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Type;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -49,6 +50,7 @@ public class ProtestEntity implements Serializable {
     private String month;
     @Column(name = "AREA")
     private String area;
+    @Type(type = "org.hibernate.type.BinaryType")
     @Column(name = "DOCUMENT")
     private byte[] document;
     @Column(name = "PROTESTTYPE")

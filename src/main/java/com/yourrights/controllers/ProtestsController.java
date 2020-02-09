@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.yourrights.beans.Protest;
 import com.yourrights.beans.Protests;
@@ -37,6 +39,12 @@ public class ProtestsController {
     @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "Bearer access_token")
     public void createProtest(@RequestBody Protest protest) {
 	protestService.createProtest(protest);
+    }
+    
+    @PostMapping(Constants.LOADFILE + "/{id}")
+    @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "Bearer access_token")
+    public void createProtest(@PathVariable("id") long id, @RequestParam("file") MultipartFile file) {
+	protestService.loadDocument(file, id);
     }
 
     @DeleteMapping(value = Constants.DELETE + "/{id}")
